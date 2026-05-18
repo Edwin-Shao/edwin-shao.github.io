@@ -60,7 +60,9 @@ export default function Navigation({
       setScrolled(isScrolled);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Check immediately on mount and after language/content changes
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -169,7 +171,7 @@ export default function Navigation({
               'transition-all duration-300 ease-out',
               scrolled
                 ? 'bg-background/80 backdrop-blur-xl border-b border-neutral-200/50 shadow-lg'
-                : 'bg-transparent'
+                : 'bg-transparent border-b border-transparent shadow-none'
             )}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

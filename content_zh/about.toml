@@ -3,9 +3,10 @@ title = "关于我"
 
 [profile]
 research_interests = [
-  "计算物理",
-  "数学原理",
-  "定理证明"
+  "空中操作",
+  "扰动观测与抑制",
+  "无人机控制",
+  "轨迹优化与运动规划"
 ]
 
 [[sections]]
@@ -15,9 +16,15 @@ source = "bio.md"
 title = "关于我"
 
 [[sections]]
+id = "experience"
+type = "list"
+title = "经历"
+source = "experience.toml"
+
+[[sections]]
 id = "featured_publications"
 type = "publications"
-title = "精选论文"
+title = "论文"
 filter = "selected"
 limit = 5
 

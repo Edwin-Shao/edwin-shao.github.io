@@ -3,6 +3,7 @@ import { getPageConfig, getMarkdownContent, getBibtexContent } from '@/lib/conte
 import { getConfig } from '@/lib/config';
 import { parseBibTeX } from '@/lib/bibtexParser';
 import DynamicPageClient, { type DynamicPageLocaleData } from '@/components/pages/DynamicPageClient';
+import ResearchPageClient from '@/components/pages/ResearchPageClient';
 import {
   BasePageConfig,
   PublicationPageConfig,
@@ -96,6 +97,14 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
 
   if (Object.keys(dataByLocale).length === 0) {
     notFound();
+  }
+
+  // Research page uses a custom client component with sidebar + accordion
+  if (slug === 'research') {
+    const fallbackResearchData = dataByLocale[runtimeI18n.defaultLocale] || Object.values(dataByLocale)[0];
+    if (fallbackResearchData?.type === 'card') {
+      return <ResearchPageClient config={fallbackResearchData.config} />;
+    }
   }
 
   return <DynamicPageClient dataByLocale={dataByLocale} defaultLocale={runtimeI18n.defaultLocale} />;

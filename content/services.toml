@@ -1,9 +1,15 @@
 type = "card"
 title = "Services"
-description = "Professional services and community involvement."
+description = "Professional services and academic community involvement."
 
 [[items]]
 title = "Reviewer"
-subtitle = "Journal Name"
-date = "2024"
-content = "Reviewed papers for..."
+subtitle = "Conference on Machine Learning (CML)"
+date = "2025"
+content = "Reviewed papers in the areas of NLP and deep learning."
+
+[[items]]
+title = "Student Volunteer"
+subtitle = "International Conference on Learning Representations (ICLR)"
+date = "2025"
+content = "Assisted with session organization and attendee support."

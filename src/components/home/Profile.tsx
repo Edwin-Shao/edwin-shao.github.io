@@ -49,7 +49,7 @@ export default function Profile({ author, social, features, researchInterests }:
     useEffect(() => {
         if (!features.enable_likes) return;
 
-        const userHasLiked = localStorage.getItem('jiale-website-user-liked');
+        const userHasLiked = localStorage.getItem('prism-site-user-liked');
         if (userHasLiked === 'true') {
             setHasLiked(true);
         }
@@ -60,11 +60,11 @@ export default function Profile({ author, social, features, researchInterests }:
         setHasLiked(newLikedState);
 
         if (newLikedState) {
-            localStorage.setItem('jiale-website-user-liked', 'true');
+            localStorage.setItem('prism-site-user-liked', 'true');
             setShowThanks(true);
             setTimeout(() => setShowThanks(false), 2000);
         } else {
-            localStorage.removeItem('jiale-website-user-liked');
+            localStorage.removeItem('prism-site-user-liked');
             setShowThanks(false);
         }
     };
@@ -111,33 +111,37 @@ export default function Profile({ author, social, features, researchInterests }:
             transition={{ duration: 0.6 }}
             className="sticky top-8"
         >
-            {/* Profile Image */}
-            <div className="w-64 h-64 mx-auto mb-6 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
-                <Image
-                    src={author.avatar}
-                    alt={author.name}
-                    width={256}
-                    height={256}
-                    className="w-full h-full object-cover object-[32%_center]"
-                    priority
-                />
+            {/* Profile Image — distinctive rectangular frame */}
+            <div className="relative w-56 mx-auto mb-8 group">
+                <div className="absolute -inset-3 bg-accent/[0.04] rounded-2xl -rotate-2 transition-transform duration-500 group-hover:rotate-0" />
+                <div className="absolute -inset-1.5 bg-accent/[0.06] rounded-2xl rotate-1 transition-transform duration-500 group-hover:rotate-0" />
+                <div className="relative rounded-xl overflow-hidden shadow-lg ring-1 ring-neutral-200 dark:ring-neutral-700 transition-all duration-300 group-hover:shadow-xl">
+                    <Image
+                        src={author.avatar}
+                        alt={author.name}
+                        width={224}
+                        height={280}
+                        className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-[1.02]" style={{ objectPosition: "70% 50%" }}
+                        priority
+                    />
+                </div>
             </div>
 
-            {/* Name and Title */}
-            <div className="text-center mb-6">
-                <h1 className="text-3xl font-serif font-bold text-primary mb-2">
+            {/* Name and Title — refined typography */}
+            <div className="text-center mb-7">
+                <h1 className="text-3xl font-serif font-bold text-primary mb-2 tracking-tight leading-tight">
                     {author.name}
                 </h1>
-                <p className="text-lg text-accent font-medium mb-1">
+                <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">
                     {author.title}
                 </p>
-                <p className="text-neutral-600 mb-2">
+                <p className="text-sm text-neutral-500 leading-relaxed">
                     {author.institution}
                 </p>
             </div>
 
-            {/* Contact Links */}
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6 relative px-2">
+            {/* Contact Links — refined */}
+            <div className="flex flex-wrap justify-center gap-2 mb-7 relative px-2">
                 {socialLinks.map((link) => {
                     const IconComponent = link.icon;
                     if (link.isLocation) {
@@ -294,56 +298,58 @@ export default function Profile({ author, social, features, researchInterests }:
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 sm:p-2 text-neutral-600 dark:text-neutral-400 hover:text-accent transition-colors duration-200"
+                            className="p-2.5 text-neutral-500 dark:text-neutral-400 hover:text-accent hover:bg-accent/[0.06] rounded-full transition-all duration-200"
                             aria-label={link.name}
                         >
-                            <IconComponent className="h-5 w-5" />
+                            <IconComponent className="h-4.5 w-4.5" />
                         </a>
                     );
                 })}
             </div>
 
-            {/* Research Interests */}
+            {/* Research Interests — refined card */}
             {researchInterests && researchInterests.length > 0 && (
-                <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mb-6 hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
-                    <h3 className="font-semibold text-primary mb-3">{messages.profile.researchInterests}</h3>
-                    <div className="space-y-2 text-sm text-neutral-700 dark:text-neutral-500">
+                <div className="bg-white dark:bg-neutral-100 rounded-xl p-5 mb-6 border border-neutral-200 dark:border-neutral-200 shadow-sm hover:shadow-md transition-all duration-300">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-accent mb-4">{messages.profile.researchInterests}</h3>
+                    <div className="space-y-3">
                         {researchInterests.map((interest, index) => (
-                            <div key={index}>{interest}</div>
+                            <div key={index} className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-500 group">
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors duration-200 flex-shrink-0" />
+                                <span className="group-hover:text-primary transition-colors duration-200">{interest}</span>
+                            </div>
                         ))}
                     </div>
                 </div>
             )}
 
-            {/* Like Button */}
+            {/* Like Button — subtle */}
             {features.enable_likes && (
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-2">
                     <div className="relative">
                         <motion.button
                             onClick={handleLike}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${hasLiked
-                                ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
-                                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 cursor-pointer'
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            className={`flex items-center space-x-2 px-5 py-2.5 rounded-full font-medium text-xs tracking-wide transition-all duration-300 ${hasLiked
+                                ? 'bg-accent/10 text-accent border border-accent/20'
+                                : 'bg-neutral-50 dark:bg-neutral-100 text-neutral-500 hover:text-accent hover:bg-accent/[0.04] border border-transparent hover:border-accent/15 cursor-pointer'
                                 }`}
                         >
                             {hasLiked ? (
-                                <HeartSolidIcon className="h-4 w-4" />
+                                <HeartSolidIcon className="h-3.5 w-3.5" />
                             ) : (
-                                <HeartIcon className="h-4 w-4" />
+                                <HeartIcon className="h-3.5 w-3.5" />
                             )}
                             <span>{hasLiked ? messages.profile.liked : messages.profile.like}</span>
                         </motion.button>
 
-                        {/* Thanks bubble */}
                         <AnimatePresence>
                             {showThanks && (
                                 <motion.div
-                                    initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                                    animate={{ opacity: 1, y: -10, scale: 1 }}
-                                    exit={{ opacity: 0, y: -20, scale: 0.8 }}
-                                    className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg whitespace-nowrap"
+                                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                    animate={{ opacity: 1, y: -12, scale: 1 }}
+                                    exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                                    className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full bg-accent text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg whitespace-nowrap"
                                 >
                                     {messages.profile.thanks} 😊
                                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-accent"></div>

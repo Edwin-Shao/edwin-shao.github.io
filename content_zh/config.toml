@@ -1,18 +1,18 @@
 [site]
-title = "刘嘉乐"
-description = "某某大学博士生个人主页。"
-last_updated = "2025年11月18日"
+title = "邵骏凯"
+description = "机械工程研究型硕士研究生。"
+last_updated = "2026年5月"
 
 [author]
-name = "刘嘉乐"
-title = "博士生"
-institution = "某某大学"
+name = "邵骏凯"
+title = "研究型硕士生"
+institution = "宁波诺丁汉大学"
 
 [social]
-location = "城市，国家"
+location = "浙江宁波"
 location_details = [
-  "理科楼 123 室，",
-  "大学路，城市，国家"
+  "浙江省宁波市鄞州区钱湖南路8号",
+  "浙江万里学院 315000"
 ]
 
 [[navigation]]
@@ -22,28 +22,10 @@ target = "about"
 href = "/"
 
 [[navigation]]
-title = "论文"
+title = "发表"
 type = "page"
 target = "publications"
 href = "/publications"
-
-[[navigation]]
-title = "教学"
-type = "page"
-target = "teaching"
-href = "/teaching"
-
-[[navigation]]
-title = "奖项"
-type = "page"
-target = "awards"
-href = "/awards"
-
-[[navigation]]
-title = "服务"
-type = "page"
-target = "services"
-href = "/services"
 
 [[navigation]]
 title = "简历"

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { LanguageIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { useLocaleStore } from '@/lib/stores/localeStore';
 import type { I18nRuntimeConfig } from '@/types/i18n';
@@ -11,10 +10,14 @@ interface LanguageToggleProps {
   i18n: I18nRuntimeConfig;
 }
 
+const LABEL_MAP: Record<string, string> = {
+  en: 'EN',
+  zh: '中文',
+};
+
 export default function LanguageToggle({ i18n }: LanguageToggleProps) {
   const { locale, setLocale } = useLocaleStore();
   const [mounted, setMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -26,79 +29,50 @@ export default function LanguageToggle({ i18n }: LanguageToggleProps) {
 
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center w-14 h-10 rounded-lg border border-neutral-200 dark:border-[rgba(148,163,184,0.24)] bg-background dark:bg-neutral-800">
-        <div className="w-6 h-4 rounded bg-neutral-300 animate-pulse" />
+      <div className="flex items-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 overflow-hidden h-7">
+        <div className="w-8 h-full bg-neutral-200 dark:bg-neutral-600 animate-pulse rounded-full" />
+        <div className="w-8 h-full animate-pulse" />
       </div>
     );
   }
 
   const currentLocale = i18n.locales.includes(locale) ? locale : i18n.defaultLocale;
-  const currentLabel = i18n.labels[currentLocale] || currentLocale;
+  const orderedLocales = [...i18n.locales].sort((a) => a === i18n.defaultLocale ? -1 : 1);
+  const activeIndex = orderedLocales.indexOf(currentLocale);
 
   return (
-    <div className="relative">
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        type="button"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          'flex items-center justify-center gap-1 px-2 h-10 rounded-lg',
-          'border border-neutral-200 bg-background hover:bg-neutral-50',
-          'dark:border-[rgba(148,163,184,0.24)] dark:bg-neutral-800 dark:hover:bg-neutral-700',
-          'transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50',
-          'text-neutral-600 hover:text-primary dark:text-neutral-400 dark:hover:text-white'
-        )}
-        title={currentLabel}
-      >
-        <LanguageIcon className="h-4 w-4" />
-        <span className="text-xs font-medium">{currentLabel}</span>
-        <ChevronDownIcon className="h-3.5 w-3.5" />
-      </motion.button>
+    <div className="relative flex items-center rounded-full border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 p-[2px] h-7">
+      {/* Sliding indicator */}
+      <motion.div
+        layout
+        className="absolute top-[2px] bottom-[2px] rounded-full bg-accent shadow-sm"
+        initial={false}
+        animate={{
+          left: activeIndex === 0 ? '2px' : '50%',
+          width: `calc(50% - 4px)`,
+        }}
+        transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+      />
 
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          className={cn(
-            'absolute right-0 mt-2 w-36 rounded-lg shadow-lg border',
-            'bg-background border-neutral-200 dark:border-[rgba(148,163,184,0.24)]',
-            'dark:bg-neutral-800 z-50'
-          )}
-        >
-          <div className="py-1">
-            {i18n.locales.map((localeOption) => (
-              <button
-                key={localeOption}
-                onClick={() => {
-                  setLocale(localeOption);
-                  setIsOpen(false);
-                }}
-                className={cn(
-                  'flex items-center justify-between w-full px-3 py-2 text-sm',
-                  'hover:bg-neutral-50 dark:hover:bg-neutral-700',
-                  'transition-colors duration-200',
-                  currentLocale === localeOption
-                    ? 'text-accent bg-accent/10'
-                    : 'text-neutral-700 dark:text-neutral-300'
-                )}
-              >
-                <span>{i18n.labels[localeOption] || localeOption}</span>
-                <span className="text-xs opacity-70">{localeOption.toUpperCase()}</span>
-              </button>
-            ))}
-          </div>
-        </motion.div>
-      )}
+      {orderedLocales.map((localeOption) => {
+        const isActive = currentLocale === localeOption;
+        const label = LABEL_MAP[localeOption] || (i18n.labels[localeOption]) || localeOption;
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+        return (
+          <button
+            key={localeOption}
+            onClick={() => setLocale(localeOption)}
+            className={cn(
+              'relative z-10 w-8 h-full flex items-center justify-center text-[11px] font-semibold rounded-full transition-colors duration-150',
+              isActive
+                ? 'text-white'
+                : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300'
+            )}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }

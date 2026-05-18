@@ -1,27 +1,23 @@
 type = "card"
 title = "Awards"
-description = "Honors and awards I have received."
+description = ""
 
 [[items]]
-title = "Example Award"
-subtitle = "Organization"
+title = "Second Prize — Zhejiang Provincial Robotics Contest for College Students"
 date = "2025"
-content = "Description of the award."
 
 [[items]]
-title = "Example Award"
-subtitle = "Organization"
+title = "Gold / Bronze Medal — Zhejiang Provincial Engineering Practice and Innovation Ability Competition"
+date = "2024–2025"
+
+[[items]]
+title = "Third Prize — Contemporary Undergraduate Mathematical Contest in Modeling"
 date = "2024"
-content = "Description of the award."
 
 [[items]]
-title = "Example Award"
-subtitle = "Organization"
-date = "2023"
-content = "Description of the award."
+title = "Outstanding Student Leader — Zhejiang Wanli University"
+date = "2023–2025"
 
 [[items]]
-title = "Example Award"
-subtitle = "Organization"
-date = "2022"
-content = "Description of the award."
+title = "Scholarship — Zhejiang Wanli University"
+date = "2023–2025"

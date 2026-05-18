@@ -1,5 +1,5 @@
-I am a PhD student at the School of Science, University of Example, advised by [Prof. Advisor One](https://example.com) and [Dr. Advisor Two](https://example.com).
+I am an MRes student in Mechanical Engineering at the University of Nottingham Ningbo China, advised by Prof. Donglei Sun. I graduated with a B.E. in Communication Engineering from Zhejiang Wanli University, advised by Prof. Wenlei Yang.
 
-Prior to this, I obtained a BSc degree with First Class Honours in Natural Science from the University of Example.
+My research focuses on aerial robotics and aerial manipulation — building UAV systems that physically interact with the world. My work involves integrating parallel manipulators with quadrotor platforms, developing disturbance rejection control strategies, and designing vision-based perception systems for autonomous grasping and navigation.
 
-My current research focuses on investigating the mathematical principles of natural philosophy.
+I welcome research discussions, please get in touch.

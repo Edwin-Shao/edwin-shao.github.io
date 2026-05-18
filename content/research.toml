@@ -1,0 +1,481 @@
+type = "card"
+title = "Research Notes"
+description = "Literature reviews on aerial manipulation, covering 6-RSS parallel manipulators, adaptive admittance/impedance control, Koopman operator theory, and online dynamics identification."
+
+# ============================================================
+# DIRECTION 04 — Master Overview
+# ============================================================
+[[items]]
+title = "Direction 04: Stability-Guaranteed Adaptive Admittance-Impedance Control with Online Coupling Dynamics Identification"
+subtitle = "28 papers · 6 sub-topics (A–F) · 2025–2026 · IEEE TRO/RAL/TMECH/ICRA/IROS"
+date = "2025–2026"
+content = """
+## Overview
+
+This direction addresses **Stage II** of the 6-RSS project — stable surface-contact operations under sustained interaction forces and high-frequency manipulator motion. The core challenge is that the existing 10 Hz ADP admittance adaptation cannot track 100 Hz coupling dynamics, is model-free (ignoring analytically-known 6-RSS forward kinematics), and provides no formal stability guarantee.
+
+### Literature Statistics
+| Metric | Value |
+|---|---|
+| Total papers | **28** |
+| 2025 | 18 papers |
+| 2026 | 10 papers |
+| IEEE TRO | 3 |
+| IEEE RA-L | 9 |
+| IEEE TIE/TMECH/TSMCS | 4 |
+| ICRA/IROS | 6 |
+| Other top journals | 6 |
+
+### Six Sub-Topics
+| Cluster | Theme | Papers |
+|---|---|---|
+| **A** | Adaptive Impedance/Admittance Control & Stability Guarantees | 6 |
+| **B** | Online Coupling Dynamics Identification & Unknown Parameter Estimation | 5 |
+| **C** | Dual-Loop Coordinated Motion-Force Control Architecture | 4 |
+| **D** | Robust Compliance, Passivity & Energy Tank Methods | 4 |
+| **E** | Predictive & Optimization-Based Contact Control | 3 |
+| **F** | Sensorless Force Estimation & Parallel Robot Contact | 6 |
+
+### Three Core Contributions
+1. **Lyapunov-stable adaptive admittance** injecting 6-RSS forward kinematics as structural prior to accelerate convergence
+2. **Energy-tank-based dual-loop compliance** — outer UAV admittance (20 Hz) + inner 6-RSS impedance (100 Hz) with formal passivity
+3. **Force-sensor-supervised residual coupling identifier** using Koopman operator theory with 1 kHz F/T sensor as direct training signal
+"""
+tags = ["Direction 04", "Adaptive & Admittance Control", "Stability & Passivity"]
+
+# ============================================================
+# DIRECTION 04 — Research Proposal
+# ============================================================
+[[items]]
+title = "RP: Stability-Guaranteed Adaptive Admittance-Impedance Control with Online Coupling Dynamics Identification"
+subtitle = "Research Proposal · 6-RSS Parallel Aerial Manipulator · Stage I & II"
+date = "2026"
+content = """
+## Abstract
+
+Aerial manipulators face a fundamental challenge: dynamic coupling between the floating UAV base and onboard manipulator destabilises physical contact operations. This research proposes an adaptive admittance-impedance control framework with **formal stability guarantees** and **online coupling dynamics identification** for a 6-RSS parallel aerial manipulator.
+
+### Key Insight
+The 6-RSS closed-chain forward kinematics is **analytically known** — rather than treating it as a black box, inject it as a structural prior into the adaptive law.
+
+### Three Modules
+1. **Stability-guaranteed adaptive admittance with kinematic prior** — decompose coupling into known (6-RSS kinematics + dual-IMU) and unknown (residual), adapt only the residual at 50 Hz
+2. **Energy-tank dual-loop compliance** — outer UAV admittance (20 Hz), inner 6-RSS impedance (100 Hz), hierarchy-ceding when energy low
+3. **Koopman-based residual coupling identifier** — 1 kHz F/T sensor provides direct supervised signal; RLS with L1 regularization; feedforward into impedance controller
+
+### Platform Advantages
+- **1 kHz 6-axis F/T sensor** → force control bandwidth 10× higher than GMO-based methods
+- **6-RSS parallel stiffness** → force isotropy, error averaging
+- **Dual 400 Hz IMUs** → differential measurement of base-platform relative dynamics
+- **EtherCAT (<1 ms)** → supports >100 Hz admittance parameter updates
+
+### Experiments
+- **Stage I**: hover + grasp 0/100/200 g payloads; compare vs. EKF+CLIK+ADP baseline
+- **Stage II**: 10 cm surface scan at 2 cm/s on aluminium/painted steel/rusted steel at 2/5/10 N
+- **Ablation**: 8 configurations toggling each module
+"""
+tags = ["Direction 04", "Research Proposal", "Parallel Manipulator", "Adaptive & Admittance Control"]
+
+# ============================================================
+# DIRECTION 04 — Cluster A: Adaptive Impedance/Admittance
+# ============================================================
+[[items]]
+title = "D04-A: Adaptive Impedance/Admittance Control & Stability Guarantees"
+subtitle = "6 papers · Lyapunov-based adaptation · UUB stability proofs"
+date = "2025–2026"
+content = """
+Core challenge: how to adjust impedance/admittance parameters online while **guaranteeing stability** under unknown UAV-manipulator coupling.
+
+**Key papers:**
+- **Sharma et al. (2025, IROS submitted):** First Lyapunov-based stability proof for adaptive impedance with unknown coupling dynamics. Limitation: treats ALL dynamics as unknown → conservative gains, slow convergence. Our enhancement: inject 6-RSS analytical kinematics as prior → faster adaptation.
+- **Song et al. (2025 RA-L):** Robust adaptive impedance for contact force tracking with unknown environment stiffness. Novel robust integral of saturation error (RISE) filter.
+- **Yadav et al. (2025 TMECH):** Modular adaptive framework with decoupled UAV/manipulator adaptive laws. No force sensor — relies on tracking error. Our advantage: 1 kHz F/T sensor provides direct supervised signal.
+- **Additional papers** address port-Hamiltonian formulations, admittance with energy tanks, and RL-based variable impedance learning.
+
+**Key gap:** No existing work injects parallel mechanism kinematics as a structural prior into adaptive impedance — all treat the manipulator as a generic unknown system.
+"""
+tags = ["Direction 04", "Adaptive & Admittance Control", "Stability & Passivity"]
+
+# ============================================================
+# DIRECTION 04 — Cluster B: Online Coupling Identification
+# ============================================================
+[[items]]
+title = "D04-B: Online Coupling Dynamics Identification & Unknown Parameter Estimation"
+subtitle = "5 papers · Recursive estimation · Koopman identification · Inertia tensor"
+date = "2025–2026"
+content = """
+Core challenge: estimate the UAV-manipulator coupling dynamics in real time without requiring a priori knowledge of payload mass, inertia, or contact stiffness.
+
+**Key papers:**
+- **Jin et al. (2025 RA-L):** Neural predictor for payload-induced force/moment estimation — 66% error reduction. Limitation: black-box NN, no interpretability. Our replacement: Koopman operator for interpretable linear dynamics.
+- **Online RLS-based inertia identification** methods for time-varying payload adaptation.
+- **Physics-informed dynamics learning** combining analytical models with data-driven residual estimation.
+- **Generalized momentum observer (GMO)** baselines: low-pass filtered, ~20-30 Hz bandwidth vs. our 100 Hz target.
+
+**Key gap:** No work exploits the known 6-RSS closed-chain forward kinematics to **constrain the parameter space** of the online identifier — all treat the system as fully unknown.
+"""
+tags = ["Direction 04", "Online Identification", "Koopman Operator"]
+
+# ============================================================
+# DIRECTION 04 — Cluster C: Dual-Loop Coordination
+# ============================================================
+[[items]]
+title = "D04-C: Dual-Loop Coordinated Motion-Force Control Architecture"
+subtitle = "4 papers · Outer admittance + inner impedance · Decoupled normal/tangential control"
+date = "2025–2026"
+content = """
+Core challenge: coordinate the UAV base compliance (slow, large inertia) with the end-effector force control (fast, small inertia) without destructive interference.
+
+**Key papers:**
+- **Guo et al. (2024 RA-L):** Flying Calligrapher — demonstrated decoupled normal-force and tangential-motion control for aerial writing. Informs our Stage II experiment design.
+- **Byun et al. (2024 RA-L):** Image-based impedance filter for time-varying contact force tracking; UUB stability proof.
+- **Tognon et al. (2019 RA-L):** Truly-redundant aerial manipulator — push-and-slide inspection using whole-body coordination.
+
+**Key gap:** Existing dual-loop architectures are designed for **serial manipulators**. Parallel mechanisms enable fundamentally different coordination strategies due to inverse kinematics being analytically tractable — the outer loop can command the inner loop in task space with exact kinematic mapping.
+"""
+tags = ["Direction 04", "Adaptive & Admittance Control"]
+
+# ============================================================
+# DIRECTION 04 — Cluster D: Passivity & Energy Tanks
+# ============================================================
+[[items]]
+title = "D04-D: Robust Compliance, Passivity & Energy Tank Methods"
+subtitle = "4 papers · Energy tanks · Passivity guarantees · Hierarchy ceding"
+date = "2025–2026"
+content = """
+Core challenge: guarantee that the system never generates energy during contact (passivity violation → instability), even when admittance parameters change online.
+
+**Key papers:**
+- **Brunner et al. (2022 ICRA):** Energy tank-based policies for robust aerial physical interaction with moving objects.
+- **Tveter et al. (2025):** Hierarchy-ceding for multi-task priority under energy constraints — lower-priority tasks relax before higher-priority ones.
+- **Port-Hamiltonian formulations** for energy-consistent variable admittance control.
+
+**Our application:** Energy tank monitors total system passivity. When energy runs low: (1) safety constraints via CBF, (2) contact stability, (3) normal force tracking, (4) tangential trajectory, (5) operation speed — relaxed in priority order.
+"""
+tags = ["Direction 04", "Stability & Passivity"]
+
+# ============================================================
+# DIRECTION 04 — Cluster E: Predictive Optimization
+# ============================================================
+[[items]]
+title = "D04-E: Predictive & Optimization-Based Contact Control"
+subtitle = "3 papers · NMPC admittance · Predictive compliance · Distributed optimization"
+date = "2025–2026"
+content = """
+Core challenge: anticipate contact forces before they occur rather than reacting after error accumulates.
+
+**Key papers:**
+- **Alharbat et al. (2025 RA-L):** Predictive admittance control embedding admittance dynamics into NMPC. Limitation: computational cost prohibitive for 100 Hz inner loop.
+- Distributed NMPC strategies for parallel mechanisms with sparse dynamics.
+- **Koopman-based predictive models** as computationally cheaper alternative to full NMPC — linear in lifted space.
+
+**Key gap:** Predictive frameworks assume serial arm dynamics. 6-RSS sparse dynamic structure (6 independent limbs with local coupling) is naturally suited to distributed optimization — a structural advantage not yet exploited.
+"""
+tags = ["Direction 04", "Adaptive & Admittance Control"]
+
+# ============================================================
+# DIRECTION 04 — Cluster F: Sensorless & Parallel Contact
+# ============================================================
+[[items]]
+title = "D04-F: Sensorless Force Estimation, Parallel Robot Contact & 6-RSS Frameworks"
+subtitle = "6 papers · GMO · Parallel contact detection · Flying parallel robots"
+date = "2025–2026"
+content = """
+Core challenge: most aerial platforms lack direct force sensing. This cluster covers force estimation from indirect measurements and the rare works addressing **parallel** aerial manipulators.
+
+**Key papers:**
+- **Mohammad et al. (2025 RA-L):** Only paper comparing EKF-IMU vs. GMO for contact detection on **parallel robots** — binary detection only, not continuous force estimation.
+- **Zhu et al. (2026 Sci. Rep.):** Force sensorless impedance control for Flying Parallel Robot (FPR) — uses RBF neural network. Our advantage: 1 kHz F/T sensor replaces RBF estimation → 30× bandwidth improvement.
+- **Danko et al. (2015):** First-ever demonstration of parallel manipulator on UAV.
+- **Haberfeld et al. (2018):** Delta-type parallel mechanism stabilization on UAV.
+- **6-RSS kinematics & dynamics** analytical formulations.
+
+**Key gap:** "Parallel aerial manipulator control" is a near-empty field — only ~5 papers exist. Combined with "force sensor + Koopman + passivity guarantees", it is completely unexplored.
+"""
+tags = ["Direction 04", "Parallel Manipulator", "Disturbance Observer"]
+
+# ============================================================
+# DIRECTION 10 — Master Overview
+# ============================================================
+[[items]]
+title = "Direction 10: Koopman-Enhanced ADP Admittance Control with Real-Time Inertia Tensor Estimation"
+subtitle = "30 papers · 6 clusters (A–F) · 2022–2026 · IEEE TRO/RAL/ICRA/IROS/Annual Reviews"
+date = "2022–2026"
+content = """
+## Overview
+
+This direction upgrades the existing ADP admittance controller with a **Koopman-based inertia tensor estimator**, forming a three-tier architecture for the 6-RSS platform.
+
+### Literature Statistics
+| Metric | Value |
+|---|---|
+| Total papers | **30** |
+| 2024–2026 | 22 papers |
+| 2020–2023 | 8 papers |
+| IEEE TRO | 3 |
+| IEEE RA-L | 9 |
+| IEEE TMECH/TSMCS | 2 |
+| ICRA/IROS | 5 |
+| Annual Reviews/IJRR | 3 |
+| Other top journals | 8 |
+
+### Three-Tier Architecture
+```
+Tier 1 (10 Hz):  Koopman Inertia Tensor Estimator  ← Part B (Koopman Theory) + Part D (Online ID)
+Tier 2 (50 Hz):  Physics-Informed ADP Admittance     ← Part A (ADP/RL Control) + Part E (Passivity)
+Tier 3 (100 Hz): CLIK Trajectory Executor            ← Part C (Contact Control) + Part F (Parallel Robot)
+```
+
+### Six Clusters
+| Cluster | Theme | Papers |
+|---|---|---|
+| **A** | ADP/RL-Based Admittance & Impedance Control | 6 |
+| **B** | Koopman Operator for Dynamics Identification & Control | 5 |
+| **C** | Aerial Manipulation Contact Control & Coupling | 5 |
+| **D** | Online Dynamics Identification & Parameter Estimation | 5 |
+| **E** | Energy-Tank Passivity & Stability-Guaranteed Control | 4 |
+| **F** | Parallel Manipulator & 6-RSS Specific Control | 5 |
+
+### Key Insight
+**"Koopman + parallel aerial manipulator"** is a completely unexplored combination — existing Koopman work only covers multirotors and ground serial arms.
+"""
+tags = ["Direction 10", "Koopman Operator", "Adaptive & Admittance Control", "Online Identification"]
+
+# ============================================================
+# DIRECTION 10 — Research Proposal
+# ============================================================
+[[items]]
+title = "RP: Gaussian Process Online Learning for Contact Disturbance Estimation and Feedforward Compensation"
+subtitle = "Research Proposal · 6-RSS Parallel Aerial Manipulator · Stage II Surface Contact"
+date = "2026"
+content = """
+## Abstract
+
+This research proposes a **Gaussian Process (GP)-based online learning framework** for real-time contact disturbance estimation and feedforward compensation in a 6-RSS parallel aerial manipulator.
+
+### Why GP over Neural Networks?
+1. **Sample efficient** — reasonable predictions from 10–20 contact samples vs. hundreds for NN
+2. **Uncertainty quantification** — outputs both predictive mean (disturbance estimate) AND predictive variance (confidence)
+3. **Incremental online updates** — Woodbury rank-1 updates in O(N²), supports continuous learning without retraining
+
+### Three Components
+1. **GP Residual Disturbance Model** — input: F/T sensor + dual-IMU differential + EKF end-effector velocity; output: residual disturbance wrench. SE kernel with ARD. Online hyperparameter optimization via marginal likelihood.
+2. **Uncertainty-Aware Feedforward Gain Scheduling** — high confidence (low variance) → full GP feedforward; high uncertainty (novel contact) → smoothly attenuate to ADP baseline. Sigmoid mapping from predictive variance to gain.
+3. **Integration into CLIK Loop** — GP runs as async ROS 2 node: prediction at 100 Hz (feedforward), model update at 10 Hz (posterior recomputation). Injects at torque level upstream of actuator PID.
+
+### Platform Advantages
+- **1 kHz F/T sensor** → high-bandwidth supervised signal unmatched in existing literature
+- **Dual 400 Hz IMUs** → unique differential measurement of base-platform dynamics
+- **Existing ADP+CLIK baseline** → graceful degradation when GP is uncertain; GP never makes system worse
+
+### Experiments (Stage II)
+- 15 cm linear surface scan at 2 cm/s on aluminium, painted steel, compliant foam at 2/5/10 N
+- Compare: ADP baseline vs. analytical feedforward vs. GP-augmented
+- **Incremental learning test**: repeated scans — hypothesis that GP progressively reduces RMSE
+- **Cross-surface generalization**: train on aluminium, test on painted steel
+"""
+tags = ["Direction 10", "Research Proposal", "Machine Learning", "Contact Control"]
+
+# ============================================================
+# DIRECTION 10 — Cluster A: ADP/RL Admittance Control
+# ============================================================
+[[items]]
+title = "D10-A: ADP/RL-Based Admittance & Impedance Control"
+subtitle = "6 papers · Actor-Critic · RL variable impedance · Port-Hamiltonian admittance"
+date = "2022–2025"
+content = """
+Forms the foundational literature for **Tier 2 (ADP Layer)** — how can a robotic system maintain stable compliant interaction under uncertain, time-varying dynamics?
+
+**Key papers:**
+- **A01 — Jin et al. (2025 RA-L):** Neural predictor for flight control with payload — hybrid first-principles + learned dynamics. 66% force error reduction. Limitation: black-box NN. Our fix: Koopman for interpretable linear dynamics.
+- **A02 — Samuel et al. (2024 RA-L):** CDYOB perturbation-robust admittance for heavy payload + high-stiffness contact. **Baseline comparator.** Limitation: single-timescale estimation degrades under simultaneous slow inertia + fast contact changes.
+- **A03 — Sharma et al. (2025):** Lyapunov-based adaptive impedance with formal UUB guarantees. Limitation: treats ALL dynamics as unknown → conservative convergence. Our enhancement: 6-RSS kinematics as structural prior.
+- **A04 — Yadav et al. (2025 TMECH):** Modular decoupled adaptive framework for UAV + manipulator subsystems. No force sensor. Our advantage: 1 kHz F/T supervised signal.
+- **A05 — Port-Hamiltonian Admittance (2025):** Energy tank for passivity-preserving variable admittance. Directly integrated into our Tier 2.
+- **A06 — RL Variable Impedance:** 40% improvement in contact-rich tasks over fixed-parameter baselines. Our enhancement: physics-informed warm-start from Koopman Tier 1 estimates.
+"""
+tags = ["Direction 10", "Adaptive & Admittance Control"]
+
+# ============================================================
+# DIRECTION 10 — Cluster B: Koopman Operator
+# ============================================================
+[[items]]
+title = "D10-B: Koopman Operator for Dynamics Identification & Control"
+subtitle = "5 papers · EDMD · Koopman MPC · ESO integration · Error bounds"
+date = "2024–2026"
+content = """
+Forms the theoretical backbone for **Tier 1 (Koopman Inertia Estimator)** — lift nonlinear UAV-manipulator dynamics into a linear operator for tractable online identification.
+
+**Key papers:**
+- **B01 — Lyu et al. (2025 RA-L):** Koopman-based robust learning control with ESO — formal stability proof for Koopman+observer architecture. Directly applicable to our Tier 1 stability analysis.
+- **B02 — Koopman FDI for Multirotor (2025):** Fault detection and isolation using Koopman operator on multirotor platforms.
+- **B03 — Koopman Annual Review (2025):** Comprehensive survey of Koopman theory in robotics — dictionary design, convergence properties, EDMD variants.
+- **B04 — Koopman Error Bounds (2025):** Formal error bounds for finite-dimensional Koopman approximations — essential for our stability guarantees.
+- **B05 — Koopman MPC for Manipulator (2025):** Koopman-based model predictive control; demonstrates real-time feasibility.
+
+**Key gap:** **No Koopman work exists for parallel aerial manipulators** — the closed-chain kinematics provide a natural dictionary pruning mechanism (dimension ↓40%) that has never been exploited.
+"""
+tags = ["Direction 10", "Koopman Operator", "Online Identification"]
+
+# ============================================================
+# DIRECTION 10 — Cluster C: Contact Control
+# ============================================================
+[[items]]
+title = "D10-C: Aerial Manipulation Contact Control & Coupling Dynamics"
+subtitle = "5 papers · Decoupled normal/tangential · Robust impedance filter · Energy tanks"
+date = "2019–2025"
+content = """
+Forms the implementation layer for **Tier 3 (CLIK Trajectory Executor)** — how to execute contact trajectories while maintaining stability under physical interaction.
+
+**Key papers:**
+- **C01 — Guo et al. (2024 RA-L):** Flying Calligrapher — decoupled normal-force and tangential-motion control. Demonstrated aerial writing with precise force regulation.
+- **C02 — Byun et al. (2024 RA-L):** RISATE robust impedance filter — image-based time-varying contact force control with UUB stability proof.
+- **C03 — Tognon et al. (2019 RA-L):** Truly-redundant aerial manipulator — push-and-slide industrial inspection using whole-body coordination.
+- **C04 — Energy Tank for Moving Objects (2022 ICRA):** Passivity-guaranteed interaction with dynamically moving targets.
+- **C05 — Song et al. (2025 RA-L):** Robust adaptive impedance for unknown environment stiffness — RISE filter for contact force tracking.
+
+**Key gap:** All contact control frameworks designed for serial arms. 6-RSS closed-chain kinematics enable exact task-space → joint-space mapping, eliminating the serial arm's need for iterative inverse kinematics.
+"""
+tags = ["Direction 10", "Contact Control"]
+
+# ============================================================
+# DIRECTION 10 — Cluster D: Online Dynamics ID
+# ============================================================
+[[items]]
+title = "D10-D: Online Dynamics Identification & Parameter Estimation"
+subtitle = "5 papers · RLS inertia ID · GMO/CDYOB · Physics-informed · PINN"
+date = "2024–2026"
+content = """
+Supports **Tier 1 (Koopman Inertia Estimator)** — provides the baseline online identification methods that the Koopman operator must outperform.
+
+**Key papers:**
+- **D01 — Online RLS Inertia Identification (2025):** Recursive least squares for real-time inertia tensor estimation under payload variation.
+- **D02 — Generalized Momentum Observer (2025):** State-of-the-art momentum-based disturbance observer. Limitation: low-pass filtered (~20-30 Hz). Our Tier 1: Koopman at 50 Hz with F/T supervision.
+- **D03 — Physics-Informed Dynamics Learning (2025):** Hybrid first-principles + learned dynamics — directly informs our physics-informed ADP warm-start.
+- **D04 — CDYOB Heavy Payload (2024 RA-L):** Perturbation-robust framework for high-stiffness contact + heavy payload — serves as **baseline comparator** for our architecture.
+- **D05 — PINN Dynamics (2025):** Physics-informed neural networks for dynamics identification — alternative approach compared against Koopman.
+"""
+tags = ["Direction 10", "Online Identification", "Disturbance Observer"]
+
+# ============================================================
+# DIRECTION 10 — Cluster E: Passivity & Stability
+# ============================================================
+[[items]]
+title = "D10-E: Energy-Tank Passivity & Stability-Guaranteed Control"
+subtitle = "4 papers · Energy tanks · Port-Hamiltonian · Hierarchy ceding · TDPA"
+date = "2022–2026"
+content = """
+Provides the **safety and stability guarantees** for the entire three-tier architecture — essential when operating near humans or delicate structures.
+
+**Key papers:**
+- **E01 — Hierarchy Ceding Energy Tank (2025):** Multi-task priority under energy constraints; lower-priority tasks relax before critical ones.
+- **E02 — Port-Hamiltonian Flying End-Effector (2025):** Energy-consistent modeling of aerial end-effectors — directly applicable to 6-RSS moving platform.
+- **E03 — Whole-Body Teleoperation (2025):** Passivity-guaranteed bilateral teleoperation; time-domain passivity approach.
+- **E04 — Geometric Impedance with Sliding Mode (2025):** Combined geometric impedance control with sliding mode robustness; Lyapunov stability proof.
+
+**Our application:** Energy tank monitors total system passivity across all 3 tiers. When energy depletes: safety CBF → contact stability → normal force → tangential tracking → speed, relaxed in priority order.
+"""
+tags = ["Direction 10", "Stability & Passivity"]
+
+# ============================================================
+# DIRECTION 10 — Cluster F: 6-RSS Parallel-Specific
+# ============================================================
+[[items]]
+title = "D10-F: Parallel Manipulator & 6-RSS Specific Control"
+subtitle = "5 papers · Flying parallel robots · Delta stabilization · 6-RSS kinematics"
+date = "2015–2026"
+content = """
+The **rarest and most directly relevant** cluster — papers specifically addressing parallel mechanisms on aerial platforms.
+
+**Key papers:**
+- **F01 — Danko et al. (2015):** First-ever demonstration of parallel manipulator on UAV. Foundational feasibility proof.
+- **F02 — Haberfeld et al. (2018):** Delta-type parallel mechanism stabilization on UAV — closest prior work to 6-RSS aerial stabilization.
+- **F03 — Zhu et al. (2026 Sci. Rep.):** Flying Parallel Robot (FPR) impedance control using RBF neural network. Most directly comparable platform. Our advantage: 1 kHz F/T sensor replaces RBF estimation → 30× bandwidth.
+- **F04 — Contact Detection for Parallel Robots (2025 RA-L):** Only paper comparing EKF-IMU vs. GMO on parallel robots — binary detection; we extend to continuous force estimation with dual-IMU differential.
+- **F05 — 6-RSS Kinematics & Dynamics (2025):** Analytical forward/inverse kinematics and dynamics formulation for 6-RSS Stewart-Gough platform.
+
+**Key gap:** This cluster has **only ~5 papers total** over 10+ years. Combined with Koopman + ADP + passivity guarantees + 1 kHz F/T sensor, the research space is completely open.
+"""
+tags = ["Direction 10", "Parallel Manipulator"]
+
+# ============================================================
+# STANDALONE PAPER REVIEWS
+# ============================================================
+
+[[items]]
+title = "Review: NDOB-Based Control of a UAV with Delta-Arm Considering Manipulator Dynamics"
+subtitle = "Chen et al., arXiv 2025 (Submitted to ICRA) · Sun Yat-sen University, HI LAB"
+date = "2025"
+content = """
+## Core Contribution
+A composite control framework combining a **Nonlinear Disturbance Observer (NDOB)** with a **high-pass filter compensation loop** for quadrotors with Delta parallel manipulators. Key innovation: **frequency-domain disturbance separation** — NDOB handles low-frequency components (aerodynamics, payload), high-pass channel isolates high-frequency reaction forces from Delta arm cyclic motion.
+
+## Key Results
+- Delta arm: 7.5% of total weight, highly dynamic manipulation
+- End-effector tracking: **6 mm** precision
+- 400 g payload (30% total mass): positioning within **2.9 cm** at 0.3 g acceleration
+
+## Limitations
+- Frequency separation relies on clear spectral gap — may degrade for heavier 6-RSS mechanisms
+- No direct force-torque sensor; relies entirely on NDOB estimation (inherent low-pass lag)
+
+## Relevance
+The frequency-domain decomposition concept can inform our dual-timescale separation in the three-tier architecture.
+"""
+tags = ["Standalone Review", "Parallel Manipulator", "Disturbance Observer"]
+
+[[items]]
+title = "Review: Aerial Grasping via Maximizing Delta-Arm Workspace Utilization"
+subtitle = "Chen et al., arXiv 2025 (Submitted to IROS) · Sun Yat-sen University, HI LAB"
+date = "2025"
+content = """
+## Core Contribution
+Two-stage learning-based solution for Delta arm non-convex workspace planning: **MLP** learns workspace feasibility probability; **RevNet** approximates forward kinematics for differentiable trajectory optimization.
+
+## Key Results
+- **363% improvement** in usable workspace: 551 cm³ → 2,553 cm³
+- Learned workspace representations dramatically expand operational envelope
+
+## Relevance to 6-RSS
+Methodology directly applicable — 6-RSS workspace is also non-convex, constrained by passive joint limits and limb interference. RevNet for forward kinematics approximation is especially relevant.
+"""
+tags = ["Standalone Review", "Parallel Manipulator", "Machine Learning"]
+
+[[items]]
+title = "Review: FlyAware — Inertia-Aware Aerial Manipulation via Vision-Based Estimation and Post-Grasp Adaptation"
+subtitle = "Deng et al., IEEE RA-L 2026 · Sun Yat-sen University, HI LAB"
+date = "2026"
+content = """
+## Core Contribution
+Combines **vision-based inertia estimation** (monocular camera for pre-grasp mass prior) with **post-grasp adaptive control** (online inertia refinement). Key insight: visual prior provides warm-start for adaptation, reducing transient instability.
+
+## Key Results
+- 400 g payload (30% total mass): **2.9 cm** positioning accuracy
+- End-effector: **6 mm** precision during post-grasp maneuvers at 0.3 g acceleration
+
+## Relevance to Our Work
+Demonstrates "prior estimate + online adaptation" > pure adaptation. Our method uses **forward kinematics** as prior (vs. FlyAware's visual prior) — both inject known information to accelerate adaptive convergence.
+"""
+tags = ["Standalone Review", "Adaptive & Admittance Control", "Machine Learning", "Online Identification"]
+
+[[items]]
+title = "Review: Whole-Body Integrated Motion Planning for Aerial Manipulators"
+subtitle = "Deng et al., IEEE T-RO, Vol. 41, 2025 · Sun Yat-sen University, HI LAB"
+date = "2025"
+content = """
+## Core Contribution
+Unified whole-body planning for **9 manipulation skills** (striking, grasping, pushing, pulling, lifting, pressing, winding, threading, writing). Three components: dynamic ellipsoid collision model, flexible waypoint constraints, imitation learning for large-attitude (>45° roll) maneuvers.
+
+## Key Results
+- All 9 skills demonstrated in hardware with quantitative metrics
+- Framework generality is the main contribution
+
+## Limitations
+- Offline optimization — trajectories pre-computed, executed open-loop
+- No force feedback or contact dynamics in planning stage
+- Assumes known, static environment
+
+## Relevance to Our Work
+Provides the **planning layer** perspective complementing our **control layer** focus. Future integration: planner accounts for contact dynamics → controller compensates unmodeled disturbances.
+"""
+tags = ["Standalone Review", "Motion Planning"]

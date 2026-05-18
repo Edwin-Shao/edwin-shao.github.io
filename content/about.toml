@@ -3,9 +3,10 @@ title = "About"
 
 [profile]
 research_interests = [
-  "Computational Physics",
-  "Mathematical Principles",
-  "Proof of Theorems"
+  "Aerial Manipulation",
+  "Disturbance Observation & Rejection",
+  "UAV Control",
+  "Trajectory Optimization & Motion Planning"
 ]
 
 [[sections]]
@@ -15,9 +16,15 @@ source = "bio.md"
 title = "About"
 
 [[sections]]
+id = "experience"
+type = "list"
+title = "Experience"
+source = "experience.toml"
+
+[[sections]]
 id = "featured_publications"
 type = "publications"
-title = "Selected Publications"
+title = "Publications"
 filter = "selected"
 limit = 5
 
@@ -26,4 +33,3 @@ id = "news"
 type = "list"
 title = "News"
 source = "news.toml"
-
