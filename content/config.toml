@@ -14,10 +14,7 @@ avatar = "/face.png"
 email = "sjunkai0925@163.com"
 location = "Ningbo, Zhejiang, China"
 location_url = ""
-location_details = [
-  "No. 8 Qianhu South Road, Yinzhou District,",
-  "Ningbo, Zhejiang Province, China 315000"
-]
+location_details = ["Ningbo, Zhejiang, China"]
 google_scholar = ""
 orcid = ""
 github = "https://github.com/Edwin-Shao"

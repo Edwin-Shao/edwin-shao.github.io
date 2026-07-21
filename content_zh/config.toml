@@ -9,11 +9,8 @@ title = "研究型硕士生"
 institution = "宁波诺丁汉大学"
 
 [social]
-location = "浙江宁波"
-location_details = [
-  "浙江省宁波市鄞州区钱湖南路8号",
-  "浙江万里学院 315000"
-]
+location = "中国浙江省宁波市"
+location_details = ["中国浙江省宁波市"]
 
 [[navigation]]
 title = "关于我"
